@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Akronim&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <title>Home page</title>
+</head>
+<body>
+    <a class="backward_point" href="/"><i class="fas fa-3x fa-arrow-circle-left"></i></a>
+
+    <div class="container">
+
+        <div class="Information">
+            <img src="images/pic1.jpg" alt="">
+            <h1><%=userName%></h1>
+        </div>
+        <div class="item">
+            <div class="subject">
+                <h1>subject</h1>
+            </div>
+        <div class="subject-item">
+
+          <form action="/home" method="POST">
+            <input type="hidden" name="name" value="<%=userName%>">
+                <ul class="subject-itemList">
+
+                    <%  newItem.forEach(item=>{ %>
+                      <li>
+                          <button type="submit" name="subject" value="<%=item%>"><%=item%></button>
+                          <button class="deleteButton" type="submit" name="delete" value="<%=item%>"><i class="fas fa-trash-alt"></i></button>
+                      </li>
+
+                   <% })%>
+
+                </ul>
+            </form>
+
+
+
+
+            <form action="/home" method="POST">
+                <div class="items-adder">
+                    <input type="hidden" name="name" value="<%=userName%>">
+                    <input id="item-add" placeholder="Enter the subject" name="item"type="text">
+                    <label for="item"><button class="item-add-button" type="submit">Add</button></label>
+                </div>
+            </form>
+
+           </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        const liButton=document.querySelector('deleteButton');
+        const list= Array.from(document.querySelectorAll('subject_itemList ,li'));
+        // list.forEach(li=>{
+        //     console.log(li.childNodes);
+        //    li.addEventListener('mouseover',()=>{
+        //
+        //       li[3].classList.add('deleteButton_after_mouseover');
+        //    });
+        // });
+
+    </script>
+
+
+</body>
+</html>

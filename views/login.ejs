@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/login.css">
+
+    <title>Login section</title>
+</head>
+<body>
+    <div class="container">
+        <div class="container-child1">
+            <form action="/signUp" method="POST">
+                <H4>USERNAME</H4>
+                <input type="text" name="name" required>
+                 <H4>EMAIL</H4>
+                <input type="email" name="email"required>
+                <H4>PASSWORD</H4>
+                <input type="password" name="password" required> <br>
+                <button type="submit">SIGN UP</button>
+            </form>
+        </div>
+        <div class="container-child2">
+            <form action="/login" method="post">
+                <H4>USERNAME</H4>
+                <input type="text" name="name"required>
+                <H4>PASSWORD</H4>
+                <input type="password" name="password"required> <br>
+                <button type="submit">SIGN IN</button>
+            </form>
+        </div>
+
+
+    </div>
+
+</body>
+</html>

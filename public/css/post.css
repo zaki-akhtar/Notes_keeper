@@ -1,0 +1,68 @@
+body{
+    background-image: linear-gradient(to right, #74ebd5, #acb6e5);
+}
+.backward_point{
+    position: relative;
+    position: fixed;
+    top: 20px;
+}
+.container{
+    width: 90%;
+    margin:auto 5%;
+   color: rgb(53, 40, 40);
+}
+.subjectHeader{
+    text-align: center;
+    font-size: 40px;
+}
+.title{
+    width: 20%;
+    text-align: center;
+    margin:40px auto;
+}
+.pargraph{
+    margin:10px;
+    line-height: 1.5;
+}
+.post_content{
+   background-image: linear-gradient(to right, #1c92d2, #f2fcfe);
+
+}
+
+.AddButton{
+    float:right;
+}
+.soundButton{
+
+     display: none;
+     margin: 5px;
+     font-size: 15px;
+
+}
+.update_button{
+  float: right;
+  display: block;
+}
+/* .update_button_after_mouseover{
+  display: block;
+} */
+.soundButtonAppearence{
+    display: block;
+
+}
+.button_container{
+    height: 80px;
+    width: 100px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+@media screen {
+
+}
+.button_container_appearence{
+     background: #334756;
+     position: relative;
+}

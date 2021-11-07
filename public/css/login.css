@@ -1,0 +1,53 @@
+
+body{
+    background-image: linear-gradient(to right, #136a8a, #267871);;
+}
+.container{
+    display: flex;
+    height: 600px;
+    justify-content: center;
+    align-items: center;
+    color:palegreen
+}
+.container-child1{
+    margin-right: 100px;
+  
+}
+.container-child2{
+    margin-left:100px;
+
+}
+h4{
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+input{
+   border-color: orange;
+   height: 30px;
+   background: powderblue;
+   border: none;
+   font-size: 15px;
+
+
+}
+ button{
+    margin-top: 15px;
+    margin-left:30%;
+    background-color: powderblue;
+    border: none;
+    height: 25px;
+    border-radius: 3px;
+}
+button:hover{
+    background: greenyellow;
+}
+
+@media only screen and (max-width:600px) {
+    .container{
+        flex-direction:column;
+
+    }
+    .container >*{
+        margin: auto;
+    }
+}

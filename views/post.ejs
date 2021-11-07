@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/post.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <a class="backward_point" href="/home"><i class="fas fa-3x fa-arrow-circle-left"></i></a>
+        <form action="/subject" method="POST">
+            <button class="AddButton" type="submit" name="name" value="<%=subject%>" ><i class="fas fa-3x fa-plus"></i></button>
+        </form> <br>
+
+       <div class="subjectHeader">
+           <h1><%=subject%> </h1>
+       </div>
+       <div class="button_container">
+        <button class="soundButton playButton"><i class="fas fa-headphones"></i></button><br>
+        <button class="soundButton pause">❚ ❚</button>
+      </div>
+
+
+
+       <%  contents.forEach(content=>{ %>
+         <form class="" action="/deletePost" method="POST">
+
+           <button class="update_button" type="submit"><i class="fa  fa-times" aria-hidden="true"></i></button>
+           <input type="hidden" name="title" value="<%=content.title%>">
+           <input type="hidden" name="para" value="<%=content.para%>">
+           <div class="post_content">
+                <h1 class="title"  ><%=content.title%></h1>
+                <p class="pargraph" ><%=content.para%></p>
+            </div>
+         </form>
+
+      <%  }) %>
+
+    </div>
+
+
+    <script>
+        const postContent= document.querySelectorAll('.post_content');
+        const soundicon=document.querySelector('.playButton');
+        const popUp=document.querySelectorAll('.soundButton');
+        const pause=document.querySelector('.pause');
+        const icondiv=document.querySelector('.button_container');
+        const msg =new SpeechSynthesisUtterance();
+
+        msg.lang='eng-US';
+        msg.rate=1;
+        let content;
+
+        function displaySoundicon(){
+            const popUP=Array.from(popUp);
+            console.log(popUP);
+            popUP.forEach(pop=>pop.classList.toggle('soundButtonAppearence'));
+            icondiv.classList.toggle('button_container_appearence');
+            content=this;
+        }
+
+       function handlingUtterance(){
+         console.log('run');
+         speechSynthesis.pause();
+         speechSynthesis.resume();
+       }
+
+       function startReading(){
+
+           msg.text=content.childNodes[1].innerText;
+           speechSynthesis.cancel();
+           speechSynthesis.speak(msg);
+           msg.text=content.childNodes[3].innerText;
+           let r=setInterval(handlingUtterance,10000);
+           speechSynthesis.speak(msg);
+           if(!speechSynthesis.speak){clearInterval(r);}
+
+      }
+
+
+        pause.addEventListener('click',()=>{
+          if( pause.innerHTML==='❚ ❚')
+           {speechSynthesis.pause(); pause.innerHTML="►";}
+           else{ speechSynthesis.resume(); pause.innerHTML='❚ ❚';}
+
+        });
+
+
+        soundicon.addEventListener('click',startReading);
+        postContent.forEach(post=> post.addEventListener('click',displaySoundicon));
+     </script>
+
+</body>
+
+</html>
