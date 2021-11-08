@@ -9,28 +9,38 @@ body{
 .container{
     width: 90%;
     margin:auto 5%;
-   color: rgb(53, 40, 40);
+    color: rgb(53, 40, 40);
 }
 .subjectHeader{
     text-align: center;
     font-size: 40px;
+
 }
 .title{
     width: 20%;
     text-align: center;
     margin:40px auto;
+    color: #20968B;
 }
 .pargraph{
     margin:10px;
     line-height: 1.5;
+    font: 17px 'Open-Sans', sans-serif;
 }
 .post_content{
-   background-image: linear-gradient(to right, #1c92d2, #f2fcfe);
+
+   background: #141422;
+   color:#D2D2D2;
+   border-radius: 10px;
+   box-shadow: 5px 10px 20px #141422;
+
 
 }
 
 .AddButton{
     float:right;
+    border-radius: 50%;
+    border: none;
 }
 .soundButton{
 

@@ -3,9 +3,11 @@ const express= require('express');
 const app =express();
 const bodyParser=require('body-parser');
 const mongoose=require('mongoose');
-var  mongooseDynamic = require ('mongoose-dynamic-schemas');
+const  mongooseDynamic = require ('mongoose-dynamic-schemas');
+const bcrypt=require('bcrypt');
 
-mongoose.connect('mongodb://localhost:27017/NotesDb');
+
+mongoose.connect('mongodb+srv://admin-zaki:test123@cluster0.joxaz.mongodb.net/NotesDb');
 
 
 const subjectPostSchema=new mongoose.Schema({
@@ -29,7 +31,7 @@ app.use(express.static('public'));
 app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 
-
+const saltRounds=10;
 let userName;
 let subjectName;
 let isAuth=false;
@@ -128,20 +130,25 @@ app.post('/signUp',(req,res)=>{
    Users.find({name:req.body.name},(err,list)=>{
      if(!err){
        if(list.length===0){
+         bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+              if(!err){
+                const user=new Users ({
+                    name:req.body.name,
+                    email:req.body.email,
+                    password:hash
+                  });
 
-       const user=new Users ({
-          name:req.body.name,
-          email:req.body.email,
-          password:req.body.password
+                user.save();
+                userName=req.body.name;
+                isAuth=!isAuth;
+                res.redirect('/home');
+               }
+
+            else{ console.log(err);}
         });
-
-        user.save();
-        userName=req.body.name;
-        isAuth=!isAuth;
-        res.redirect('/home');
-         }
+      }
        else{
-         res.render('alert');
+         res.render('alert',{message:'OOPs! ☹ Try different UserName'});
         }
      }
     else{console.log(err);}
@@ -152,20 +159,33 @@ app.post('/signUp',(req,res)=>{
 
 app.post('/login',(req,res)=>{
 
- Users.find({name:req.body.name,password: req.body.password},(err,foundList)=>{
+
+ Users.findOne({name:req.body.name},(err,foundList)=>{
       if(!err){
-        isAuth=!isAuth;
-        userName=req.body.name;
-        res.redirect('/home');
-      }
+        if(foundList===null){res.render('alert',{message:'sorry! ☹ Your Username is incorrect'});}
+        else{
+        bcrypt.compare(req.body.password, foundList.password, function(err, result) {
+          if(result){
+            isAuth=!isAuth;
+            userName=foundList.name;
+            res.redirect('/home');
+          }
+         else{
+          res.render('alert',{message:'OOPs! ☹ Your Password is incorrect'});
+         }
+        });
+
+      }}
       else{
         console.log(err);
       }
     })
 });
 
-
-
-app.listen('3000',(req,res)=>{
-    console.log("server is running on port 3000");
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+app.listen(port,(req,res)=>{
+    console.log("server has started successfully");
 });
