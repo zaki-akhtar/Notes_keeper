@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/post.css">
+    <link rel="stylesheet" href="/css/post.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Akronim&display=swap" rel="stylesheet">
 
@@ -12,9 +12,10 @@
 </head>
 <body>
     <div class="container">
-        <a class="backward_point" href="/home"><i class="fas fa-3x fa-arrow-circle-left"></i></a>
+        <a class="backward_point" href="/home/<%=name%>"><i class="fas fa-3x fa-arrow-circle-left"></i></a>
         <form action="/subject" method="POST">
-            <button class="AddButton" type="submit" name="name" value="<%=subject%>" ><i class="fas fa-3x fa-plus"></i></button>
+            <input type="hidden" name="name" value="<%=name%>">
+            <button class="AddButton" type="submit" name="subject" value="<%=subject%>" ><i class="fas fa-3x fa-plus"></i></button>
         </form> <br>
 
        <div class="subjectHeader">
@@ -33,6 +34,8 @@
            <button class="update_button" type="submit"><i class="fa  fa-times" aria-hidden="true"></i></button>
            <input type="hidden" name="title" value="<%=content.title%>">
            <input type="hidden" name="para" value="<%=content.para%>">
+           <input type="hidden" name="subject" value="<%=subject%>">
+           <input type="hidden" name="name" value="<%=name%>">
            <div class="post_content">
                 <h1 class="title"  ><%=content.title%></h1>
                 <p class="pargraph" ><%=content.para%></p>

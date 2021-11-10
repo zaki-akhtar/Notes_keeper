@@ -5,10 +5,16 @@ const bodyParser=require('body-parser');
 const mongoose=require('mongoose');
 const  mongooseDynamic = require ('mongoose-dynamic-schemas');
 const bcrypt=require('bcrypt');
+const session=require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 
 mongoose.connect('mongodb+srv://admin-zaki:test123@cluster0.joxaz.mongodb.net/NotesDb');
 
+const store = new MongoDBStore({
+  uri: 'mongodb+srv://admin-zaki:test123@cluster0.joxaz.mongodb.net/NotesDb',
+  collection: 'mySessions',
+});
 
 const subjectPostSchema=new mongoose.Schema({
   name:String,
@@ -27,24 +33,31 @@ const userSchema=new mongoose.Schema({
 const Users=new mongoose.model('User',userSchema);
 const SubjectPost=new mongoose.model('subjectPost',subjectPostSchema);
 
-app.use(express.static('public'));
+app.use(express.static(__dirname+'/public'));
 app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false,
+  store:store,
+}));
 
 const saltRounds=10;
-let userName;
-let subjectName;
-let isAuth=false;
+const isAuth=(req,res,next)=>{
+  req.session.isAuth?next():res.redirect('/');
+}
 
 
 
 app.get('/',(req,res)=>{
-    isAuth=false;
-    res.render("login",{});
+    req.session.destroy(err=>{
+      if(err){console.log(err);}})
+      res.render("login");
 });
 
-app.get('/home',(req,res)=>{
-
+app.get('/home/:name',isAuth,(req,res)=>{
+  let userName=req.params.name;
   if(isAuth){
       Users.findOne({name:userName},(err,foundList)=>{
         if(!err){
@@ -55,43 +68,47 @@ app.get('/home',(req,res)=>{
     }
 })
 
-app.get('/subject',(req,res)=>{
+app.get('/subject/:name/:subjectName',isAuth,(req,res)=>{
 
+   let userName=req.params.name;
+   let subjectName=req.params.subjectName;
   SubjectPost.find({name:userName,subject:subjectName},(err,list)=>{
 
     if(!err){
       const x=list.filter(a=>a.name===userName && a.subject===subjectName);
-        res.render('post',{contents:x,subject:subjectName});}
+        res.render('post',{name:userName,contents:x,subject:subjectName});}
    });
 })
 
-app.get('/postsubmit',(req,res)=>{
-    if(isAuth) res.render('postsubmit');
+app.get('/postsubmit/:name/:subject',(req,res)=>{
+  let userName=req.params.name;
+  let subject=req.params.subject;
+    if(isAuth) res.render('postsubmit',{name:userName,subject:subject});
     else res.redirect('/');
 })
 
 
 
 app.post('/home',(req,res)=>{
-let name=req.body.name;
+ let name=req.body.name;
  if(req.body.item){
     Users.updateOne({name: name},{ $push:{subject:req.body.item}},(err)=>{
         if(!err){console.log('updated');}
         else{console.log(err);}
       })
-     res.redirect('/home');
+     res.redirect(`/home/${name}`);
    }
  else if(req.body.delete){
   Users.updateOne({name:name},{$pull:{subject:req.body.delete}},(err)=>{
     if(!err){
     SubjectPost.deleteMany({name:name,subject:req.body.delete},err=>{if(!err){console.log('post delete');}});
-    res.redirect('/home');}
+    res.redirect(`/home/${name}`);}
   })
  }
-else if(req.body.item===''){res.redirect('/home');}
+else if(req.body.item===''){res.redirect(`/home/${name}`);}
 else{
    subjectName=req.body.subject;
-   res.redirect('/subject');
+   res.redirect(`/subject/${name}/${subjectName}`);
 }
 })
 
@@ -99,14 +116,17 @@ else{
 
 
 app.post('/subject',(req,res)=>{
-  postsubjectName=req.body.name;
-   res.redirect('/postsubmit');
+  let subject=req.body.subject;
+  let name=req.body.name;
+   res.redirect(`/postsubmit/${name}/${subject}`);
 })
 
 app.post('/deletePost',(req,res)=>{
 
+    let userName=req.body.name;
+    let subject=req.body.subject;
     SubjectPost.deleteOne({name:userName,title:req.body.title,para:req.body.para},(err)=>{
-    if(!err){  res.redirect('/subject');}
+    if(!err){ res.redirect(`subject/${userName}/${subject}`);}
     else{console.log(err);}
   });
 })
@@ -114,14 +134,14 @@ app.post('/deletePost',(req,res)=>{
 
 app.post('/postsubmit',(req,res)=>{
 
-     const x=new SubjectPost({name:userName,subject:postsubjectName,title:req.body.title, para:req.body.contentOftitle});
+     let userName=req.body.name;
+     let subject=req.body.subject;
+     const x=new SubjectPost({name:userName,subject:subject,title:req.body.title, para:req.body.contentOftitle});
       x.save();
-     res.redirect("/subject");
+     res.redirect(`subject/${userName}/${subject}`);
 });
 
-app.post('/',(req,res)=>{
-    res.redirect('/home');
-});
+
 
 app.post('/signUp',(req,res)=>{
 
@@ -140,8 +160,8 @@ app.post('/signUp',(req,res)=>{
 
                 user.save();
                 userName=req.body.name;
-                isAuth=!isAuth;
-                res.redirect('/home');
+                req.session.isAuth=true;
+                res.redirect(`/home/${userName}`);
                }
 
             else{ console.log(err);}
@@ -166,9 +186,9 @@ app.post('/login',(req,res)=>{
         else{
         bcrypt.compare(req.body.password, foundList.password, function(err, result) {
           if(result){
-            isAuth=!isAuth;
             userName=foundList.name;
-            res.redirect('/home');
+            req.session.isAuth=true;
+            res.redirect(`/home/${userName}`);
           }
          else{
           res.render('alert',{message:'OOPs! ☹ Your Password is incorrect'});
