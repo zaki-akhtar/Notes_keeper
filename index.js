@@ -7,12 +7,12 @@ const  mongooseDynamic = require ('mongoose-dynamic-schemas');
 const bcrypt=require('bcrypt');
 const session=require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+require('dotenv').config();
 
-
-mongoose.connect('mongodb+srv://admin-zaki:test123@cluster0.joxaz.mongodb.net/NotesDb');
+mongoose.connect(process.env.ID);
 
 const store = new MongoDBStore({
-  uri: 'mongodb+srv://admin-zaki:test123@cluster0.joxaz.mongodb.net/NotesDb',
+  uri: process.env.ID,
   collection: 'mySessions',
 });
 
